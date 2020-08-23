@@ -36,10 +36,10 @@ class Actor(object):
 
         # MCTS of previous generation
         self.previous_mcts = MCTS(
-            self.game, self.previous_agent, self.args, dirichlet_noise=True)
+            self.game, self.previous_agent, self.args)
         # MCTS of current generation
         self.current_mcts = MCTS(
-            self.game, self.current_agent, self.args, dirichlet_noise=True)
+            self.game, self.current_agent, self.args)
 
     def self_play(self, current_weights, game_num):
         """Collecting training data by self-play.
@@ -59,7 +59,7 @@ class Actor(object):
         for _ in range(game_num):
             # reset node state of MCTS
             self.current_mcts = MCTS(
-                self.game, self.current_agent, self.args, dirichlet_noise=True)
+                self.game, self.current_agent, self.args)
             train_examples.extend(self._executeEpisode())
         return train_examples
 

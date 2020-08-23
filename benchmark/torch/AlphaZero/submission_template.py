@@ -26,11 +26,10 @@ class MCTS():
     This class handles the MCTS tree.
     """
 
-    def __init__(self, game, nn_agent, args, dirichlet_noise=False):
+    def __init__(self, game, nn_agent, args):
         self.game = game
         self.nn_agent = nn_agent
         self.args = args
-        self.dirichlet_noise = dirichlet_noise
         self.Qsa = {}  # stores Q values for s,a (as defined in the paper)
         self.Nsa = {}  # stores #times edge s,a was visited
         self.Ns = {}  # stores #times board s was visited
@@ -48,10 +47,9 @@ class MCTS():
             probs: a policy vector where the probability of the ith action is
                    proportional to Nsa[(s,a)]**(1./temp)
         """
-        dir_noise = self.dirichlet_noise
         start_time = time.time()
         while time.time() - start_time < timelimit:
-            self.search(canonicalBoard, dirichlet_noise=dir_noise)
+            self.search(canonicalBoard)
 
         s = self.game.stringRepresentation(canonicalBoard)
         counts = [
@@ -71,7 +69,7 @@ class MCTS():
         probs = [x / counts_sum for x in counts]
         return probs
 
-    def search(self, canonicalBoard, dirichlet_noise=False):
+    def search(self, canonicalBoard):
         """
         This function performs one iteration of MCTS. It is recursively called
         till a leaf node is found. The action chosen at each node is one that
@@ -105,8 +103,6 @@ class MCTS():
 
             valids = self.game.getValidMoves(canonicalBoard, 1)
             self.Ps[s] = self.Ps[s] * valids  # masking invalid moves
-            if dirichlet_noise:
-                self.applyDirNoise(s, valids)
             sum_Ps_s = np.sum(self.Ps[s])
             if sum_Ps_s > 0:
                 self.Ps[s] /= sum_Ps_s  # renormalize
@@ -124,10 +120,6 @@ class MCTS():
             return -v
 
         valids = self.Vs[s]
-        if dirichlet_noise:
-            self.applyDirNoise(s, valids)
-            sum_Ps_s = np.sum(self.Ps[s])
-            self.Ps[s] /= sum_Ps_s  # renormalize
         cur_best = -float('inf')
         best_act = -1
 
@@ -164,15 +156,6 @@ class MCTS():
         self.Ns[s] += 1
         return -v
 
-    def applyDirNoise(self, s, valids):
-        dir_values = np.random.dirichlet(
-            [self.args.dirichletAlpha] * np.count_nonzero(valids))
-        dir_idx = 0
-        for idx in range(len(self.Ps[s])):
-            if self.Ps[s][idx]:
-                self.Ps[s][idx] = (0.75 * self.Ps[s][idx]) + (
-                    0.25 * dir_values[dir_idx])
-                dir_idx += 1
 
 
 # ===== connect4_game.py ======

@@ -25,8 +25,8 @@ from connect4_model import Connect4Model
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
-    'epochs': 5,
-    'batch_size': 64,
+    'epochs': 15,
+    'batch_size': 128,
     'num_channels': 64,
 })
 

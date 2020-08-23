@@ -22,24 +22,22 @@ args = dotdict({
     # master address of xparl cluster
     'master_address': 'localhost:8010',
     # number of remote actors (execute tasks [self-play/pitting/evaluate_test_dataset] in parallel).
-    'actors_num': 25,
+    'actors_num': 10,
 
     # total number of iteration
     'numIters': 200,
     # Number of complete self-play games to simulate during a new iteration.
-    'numEps': 500,
+    'numEps': 100,
     # Number of games to play during arena (pitting) play to determine if new neural network will be accepted.
-    'arenaCompare': 50,
+    'arenaCompare': 40,
     # Number of games moves for MCTS to simulate.
-    'numMCTSSims': 800,
+    'numMCTSSims': 100,
     # temp=1 (Temperature, τ (tau)) if episodeStep < tempThresholdStep, and thereafter uses temp=0.
     'tempThresholdStep': 15,
     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
-    'updateThreshold': 0.6,
+    'updateThreshold': 0.55,
     # CPUCT parameter
-    'cpuct': 4,
-    # alpha parameter of dirichlet noise which is added to the policy (pi)
-    'dirichletAlpha': 1.0,
+    'cpuct': 1,
     # history of examples from numItersForTrainExamplesHistory latest iterations (training data)
     'numItersForTrainExamplesHistory': 20,
 
